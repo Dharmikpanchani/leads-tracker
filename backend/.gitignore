@@ -1,0 +1,22 @@
+# Backend .gitignore
+node_modules/
+data/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.sqlite-journal
+
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+logs/
+*.log
+npm-debug.log*
+
+coverage/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="VidyaSetu logo">
+  <defs>
+    <style>
+      .navy{fill:#03245b}
+      .blue{fill:#145aa3}
+      .gold{fill:#e1a11a}
+      .text{font-family: Arial, Helvetica, sans-serif; font-weight:700}
+      .tag{font-family: Arial, Helvetica, sans-serif; font-weight:500; letter-spacing:10px}
+    </style>
+  </defs>
+
+  <rect width="1200" height="1200" fill="#ffffff"/>
+
+  <!-- Shield outline -->
+  <path class="navy" d="M600 110
+    C665 160 730 190 810 215
+    L810 365
+    C810 470 738 560 600 665
+    C462 560 390 470 390 365
+    L390 215
+    C470 190 535 160 600 110Z"/>
+  <path fill="#ffffff" d="M600 145
+    C657 188 712 211 775 231
+    L775 360
+    C775 451 715 528 600 615
+    C485 528 425 451 425 360
+    L425 231
+    C488 211 543 188 600 145Z"/>
+
+  <!-- Star and rays -->
+  <polygon class="gold" points="600,196 610,227 643,227 616,246 626,277 600,258 574,277 584,246 557,227 590,227"/>
+  <g class="gold">
+    <polygon points="510,248 547,286 541,292 501,257"/>
+    <polygon points="558,221 573,265 565,268 550,224"/>
+    <polygon points="640,221 650,224 635,268 627,265"/>
+    <polygon points="688,248 697,257 659,292 653,286"/>
+  </g>
+
+  <!-- Cap -->
+  <polygon class="navy" points="600,300 690,333 600,365 510,333"/>
+  <rect class="navy" x="565" y="333" width="70" height="32" rx="6"/>
+  <line x1="670" y1="338" x2="670" y2="390" stroke="#e1a11a" stroke-width="8" stroke-linecap="round"/>
+  <circle class="gold" cx="670" cy="395" r="7"/>
+
+  <!-- Head -->
+  <circle class="navy" cx="600" cy="418" r="42"/>
+
+  <!-- Person/body -->
+  <path class="navy" d="M600 515
+    C570 470 522 427 452 365
+    C504 384 561 420 600 470
+    C639 420 696 384 748 365
+    C678 427 630 470 600 515Z"/>
+  <path class="navy" d="M558 480
+    C571 535 564 600 600 633
+    C636 600 629 535 642 480
+    C621 500 609 507 600 515
+    C591 507 579 500 558 480Z"/>
+
+  <!-- Book -->
+  <g>
+    <path class="navy" d="M315 520 C420 520 503 548 587 605 L578 670 C495 620 410 600 325 604 Z"/>
+    <path class="blue" d="M355 472 C445 472 522 500 592 560 L587 605 C510 553 431 530 345 530 Z"/>
+    <path class="navy" d="M330 570 C425 570 505 596 580 652 L576 703 C500 647 420 622 340 622 Z"/>
+
+    <path class="navy" d="M885 520 C780 520 697 548 613 605 L622 670 C705 620 790 600 875 604 Z"/>
+    <path class="blue" d="M845 472 C755 472 678 500 608 560 L613 605 C690 553 769 530 855 530 Z"/>
+    <path class="navy" d="M870 570 C775 570 695 596 620 652 L624 703 C700 647 780 622 860 622 Z"/>
+
+    <path class="navy" d="M570 666 Q600 706 630 666 L622 703 Q600 734 578 703 Z"/>
+  </g>
+
+  <!-- Brand name -->
+  <text x="600" y="875" text-anchor="middle" class="text" font-size="125">
+    <tspan class="navy">Vidya</tspan><tspan class="blue">Setu</tspan>
+  </text>
+
+  <!-- Accent lines -->
+  <rect x="105" y="925" width="260" height="5" class="gold"/>
+  <rect x="835" y="925" width="260" height="5" class="gold"/>
+
+  <!-- Tagline -->
+  <text x="600" y="990" text-anchor="middle" class="tag navy" font-size="34">QUALITY | RELIABILITY | EXCELLENCE</text>
+</svg>
