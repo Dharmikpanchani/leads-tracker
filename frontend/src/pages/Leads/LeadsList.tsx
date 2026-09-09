@@ -125,20 +125,41 @@ export const LeadsList: React.FC = () => {
     setModalOpen(true);
   };
 
-  const handleSaveLead = async (values: any) => {
-    if (editingLead) {
-      await dispatch(updateLead({ id: editingLead.id, data: values }));
-    } else {
-      await dispatch(createLead(values));
+  const handleSaveLead = async (values: any): Promise<boolean> => {
+    try {
+      if (editingLead) {
+        const result = await dispatch(updateLead({ id: editingLead.id, data: values }));
+        if (updateLead.fulfilled.match(result)) {
+          dispatch(
+            fetchLeads({
+              search: searchTerm,
+              status: statusFilter,
+              page: currentPage + 1,
+              limit: pageSize,
+            })
+          );
+          setEditingLead(null);
+          return true;
+        }
+        return false;
+      } else {
+        const result = await dispatch(createLead(values));
+        if (createLead.fulfilled.match(result)) {
+          dispatch(
+            fetchLeads({
+              search: searchTerm,
+              status: statusFilter,
+              page: currentPage + 1,
+              limit: pageSize,
+            })
+          );
+          return true;
+        }
+        return false;
+      }
+    } catch {
+      return false;
     }
-    dispatch(
-      fetchLeads({
-        search: searchTerm,
-        status: statusFilter,
-        page: currentPage + 1,
-        limit: pageSize,
-      })
-    );
   };
 
   const handleOpenDelete = (lead: Lead) => {
@@ -476,7 +497,10 @@ export const LeadsList: React.FC = () => {
       {/* Add / Edit Lead Modal */}
       <AddEditLeadModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          setEditingLead(null);
+        }}
         onSubmit={handleSaveLead}
         initialData={editingLead}
         loading={actionLoading}

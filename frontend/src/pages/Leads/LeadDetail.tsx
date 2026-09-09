@@ -28,6 +28,7 @@ import { fetchLeadById } from '../../redux/slices/leadSlice';
 import { fetchNotesByLead, addNote, deleteNote } from '../../redux/slices/noteSlice';
 import StatusChip from '../../components/common/StatusChip';
 import PopupModal from '../../components/common/PopupModal';
+import Pagination from '../../components/common/Pagination';
 import Svg from '../../assets/Svg';
 import { noteFormSchema } from '../../utils/validationSchemas';
 import { formatDate, formatDateTime } from '../../utils/formatters';
@@ -42,10 +43,22 @@ export const LeadDetail: React.FC = () => {
     (state: RootState) => state.note
   );
 
+  const [notePage, setNotePage] = useState(0);
+  const [notesPerPage, setNotesPerPage] = useState(5);
+
+  const paginatedNotes = notes ? notes.slice(notePage * notesPerPage, (notePage + 1) * notesPerPage) : [];
+
+  useEffect(() => {
+    if (notePage > 0 && notePage * notesPerPage >= (notes?.length || 0)) {
+      setNotePage(Math.max(0, Math.ceil((notes?.length || 0) / notesPerPage) - 1));
+    }
+  }, [notes, notePage, notesPerPage]);
+
   useEffect(() => {
     if (id) {
       dispatch(fetchLeadById(id));
       dispatch(fetchNotesByLead(id));
+      setNotePage(0);
     }
   }, [dispatch, id]);
 
@@ -56,8 +69,11 @@ export const LeadDetail: React.FC = () => {
     validationSchema: noteFormSchema,
     onSubmit: async (values, { resetForm }) => {
       if (!id) return;
-      await dispatch(addNote({ leadId: id, content: values.content.trim() }));
-      resetForm();
+      const result = await dispatch(addNote({ leadId: id, content: values.content.trim() }));
+      if (addNote.fulfilled.match(result)) {
+        resetForm();
+        setNotePage(0);
+      }
     },
   });
 
@@ -251,7 +267,7 @@ export const LeadDetail: React.FC = () => {
               </Box>
             ) : notes?.length > 0 ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {notes.map((note) => (
+                {paginatedNotes.map((note) => (
                   <Box
                     key={note.id}
                     sx={{
@@ -290,6 +306,19 @@ export const LeadDetail: React.FC = () => {
                     </Typography>
                   </Box>
                 ))}
+
+                {/* Pagination for Notes */}
+                <Box sx={{ mt: 1, borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                  <Pagination
+                    page={notePage}
+                    rowsPerPage={notesPerPage}
+                    setPage={setNotePage}
+                    setRowsPerPage={setNotesPerPage}
+                    count={notes.length}
+                    itemName="notes"
+                    rowsPerPageOptions={[5, 10, 20]}
+                  />
+                </Box>
               </Box>
             ) : (
               <Box sx={{ textAlign: 'center', py: 4, color: '#64748b' }}>

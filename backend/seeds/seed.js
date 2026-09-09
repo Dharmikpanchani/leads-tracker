@@ -57,8 +57,16 @@ const sampleNotes = [
   'Decision maker was in a meeting; callback requested.',
   'Interested in API integrations with their legacy database.',
   'Proposal and quotation sent for final review.',
-  'Client requested a discount on multi-user license.'
+  'Client requested a discount on multi-user license.',
+  'Product demo completed successfully. Client requested follow-up next Tuesday.',
+  'Sent customized feature brochure and client case studies via email.',
+  'Lead contacted via WhatsApp, awaiting confirmation on live meeting time.',
+  'Discussion on onboarding process, user access levels and migration roadmap.',
+  'Security & GDPR compliance documentation shared with client IT team.',
+  'Follow-up call: client reviewed proposal and is discussing with stakeholders.'
 ];
+
+const sampleAuthors = ['Developer Admin', 'System Admin'];
 
 const seedDatabase = async () => {
   try {
@@ -103,7 +111,7 @@ const seedDatabase = async () => {
       const fullName = `${fn} ${ln}`;
       const domain = domains[Math.floor(Math.random() * domains.length)];
       const email = `${fn.toLowerCase()}.${ln.toLowerCase()}${i}@${domain}`;
-      const phone = `+91 ${Math.floor(6000000000 + Math.random() * 3999999999)}`;
+      const phone = String(Math.floor(6000000000 + Math.random() * 3999999999));
       const status = statuses[Math.floor(Math.random() * statuses.length)];
       const source = sources[Math.floor(Math.random() * sources.length)];
 
@@ -130,24 +138,28 @@ const seedDatabase = async () => {
       await Lead.insertMany(chunk, { ordered: false });
     }
 
-    // 4. Generate and Insert Notes for approx 50% of leads
-    console.log('⚡ Generating notes for leads...');
+    // 4. Generate and Insert Activity Notes for 100% of leads (2 to 5 notes per lead)
+    console.log('⚡ Generating activity notes and logs for all leads...');
     const notesToInsert = [];
 
     for (const lead of leadsToInsert) {
-      if (Math.random() > 0.5) {
-        const noteCount = Math.floor(1 + Math.random() * 3);
-        for (let n = 0; n < noteCount; n++) {
-          const noteText = sampleNotes[Math.floor(Math.random() * sampleNotes.length)];
-          notesToInsert.push({
-            leadId: lead._id,
-            content: noteText,
-            createdBy: 'Developer Admin',
-            isDeleted: false,
-            createdAt: lead.createdAt,
-            updatedAt: lead.createdAt,
-          });
-        }
+      const noteCount = Math.floor(2 + Math.random() * 4); // 2 to 5 notes per lead
+      const leadCreatedTime = lead.createdAt.getTime();
+      const timeSpan = Math.max(1000, now - leadCreatedTime);
+
+      for (let n = 0; n < noteCount; n++) {
+        const noteText = sampleNotes[Math.floor(Math.random() * sampleNotes.length)];
+        const author = sampleAuthors[Math.floor(Math.random() * sampleAuthors.length)];
+        const noteTime = new Date(leadCreatedTime + Math.floor((n + 1) * (timeSpan / (noteCount + 1))));
+
+        notesToInsert.push({
+          leadId: lead._id,
+          content: noteText,
+          createdBy: author,
+          isDeleted: false,
+          createdAt: noteTime,
+          updatedAt: noteTime,
+        });
       }
     }
 
@@ -156,7 +168,7 @@ const seedDatabase = async () => {
       await Note.insertMany(chunk, { ordered: false });
     }
 
-    console.log(`✅ Successfully seeded ${leadsToInsert.length} leads and ${notesToInsert.length} notes!`);
+    console.log(`✅ Successfully seeded ${leadsToInsert.length} leads and ${notesToInsert.length} activity notes/logs!`);
     console.log('🎉 MongoDB Seeding completed successfully!');
     process.exit(0);
   } catch (error) {

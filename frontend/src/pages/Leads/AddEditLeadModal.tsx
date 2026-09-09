@@ -17,7 +17,7 @@ import { trimObjectValues } from '../../utils/formatters';
 interface AddEditLeadModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (values: any) => Promise<void>;
+  onSubmit: (values: any) => Promise<boolean | void>;
   initialData?: Lead | null;
   loading?: boolean;
 }
@@ -31,23 +31,35 @@ export const AddEditLeadModal: React.FC<AddEditLeadModalProps> = ({
 }) => {
   const isEditing = Boolean(initialData);
 
-  const formik = useFormik({
-    initialValues: {
+  const initialValues = React.useMemo(
+    () => ({
       name: initialData?.name || '',
       email: initialData?.email || '',
       phone: initialData?.phone || '',
       status: initialData?.status || 'new',
       source: initialData?.source || 'Web Portal',
-    },
+    }),
+    [initialData]
+  );
+
+  const formik = useFormik({
+    initialValues,
     validationSchema: leadFormSchema,
     enableReinitialize: true,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       const sanitized = trimObjectValues(values);
-      await onSubmit(sanitized);
-      resetForm();
-      onClose();
+      const isSuccess = await onSubmit(sanitized);
+      if (isSuccess !== false) {
+        formik.resetForm();
+        onClose();
+      }
     },
   });
+
+  const handleModalClose = () => {
+    formik.resetForm();
+    onClose();
+  };
 
   useEffect(() => {
     if (!open) {
@@ -58,13 +70,13 @@ export const AddEditLeadModal: React.FC<AddEditLeadModalProps> = ({
   return (
     <FormDialog
       open={open}
-      onClose={onClose}
+      onClose={handleModalClose}
       title={isEditing ? 'Edit Lead Information' : 'Create New Lead'}
       maxWidth="sm"
       actions={
         <>
           <Button
-            onClick={onClose}
+            onClick={handleModalClose}
             disabled={loading}
             sx={{ color: '#64748b', textTransform: 'none', fontWeight: 600 }}
           >

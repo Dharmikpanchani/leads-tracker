@@ -11,15 +11,88 @@ export const nameValidator = (label = 'Name', min = 2, max = 70) =>
     .test('no-only-spaces', `${label} cannot be empty spaces`, (val) => !!val && val.trim().length > 0)
     .required(`${label} is required`);
 
-export const emailValidator = (label = 'Email', min = 5, max = 100) =>
-  Yup.string()
-    .trim()
-    .min(min, `${label} must be at least ${min} characters`)
-    .max(max, `${label} cannot exceed ${max} characters`)
-    .email(`Please enter a valid email address`)
-    .test('no-spaces', `${label} cannot contain spaces`, (val) => !val || !/\s/.test(val))
-    .test('no-only-spaces', `${label} cannot be empty spaces`, (val) => !!val && val.trim().length > 0)
-    .required(`${label} is required`);
+export const emailRegex =
+  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}(?:\.[a-zA-Z]{2,3})?$/;
+
+export const DISPOSABLE_EMAIL_DOMAINS = new Set<string>([]);
+
+export const emailValidation = (required = true) => {
+  let schema = Yup.string()
+    .test(
+      'no-whitespace',
+      'Please enter a valid email',
+      (_value, context) =>
+        typeof context.originalValue !== 'string' ||
+        context.originalValue.trim() === context.originalValue
+    )
+    .transform((value) => value?.trim())
+    .test('no-starting-dot', 'Please enter a valid email', (value) => {
+      if (!value) return true;
+      return !/^\./.test(value);
+    })
+    .test('no-ending-dot', 'Please enter a valid email', (value) => {
+      if (!value) return true;
+      const username = value.split('@')[0];
+      return !/\.$/.test(username);
+    })
+    .test(
+      'consecutive-dots',
+      'Please enter a valid email',
+      (value?: string) => !/\.{2,}/.test(value || '')
+    )
+    .test(
+      'min-prefix-length',
+      'Email prefix must be at least 3 characters',
+      (value) => {
+        if (!value) return true;
+        const username = value.split('@')[0];
+        return username.length >= 3;
+      }
+    )
+    .max(70, 'Email must be at most 70 characters')
+    .matches(emailRegex, 'Please enter a valid email');
+
+  return required ? schema.required('Email is required') : schema;
+};
+
+export const emailValidator = (label = 'Email', required = true) => {
+  let schema = Yup.string()
+    .test(
+      'no-whitespace',
+      'Please enter a valid email',
+      (_value, context) =>
+        typeof context.originalValue !== 'string' ||
+        context.originalValue.trim() === context.originalValue
+    )
+    .transform((value) => value?.trim())
+    .test('no-starting-dot', 'Please enter a valid email', (value) => {
+      if (!value) return true;
+      return !/^\./.test(value);
+    })
+    .test('no-ending-dot', 'Please enter a valid email', (value) => {
+      if (!value) return true;
+      const username = value.split('@')[0];
+      return !/\.$/.test(username);
+    })
+    .test(
+      'consecutive-dots',
+      'Please enter a valid email',
+      (value?: string) => !/\.{2,}/.test(value || '')
+    )
+    .test(
+      'min-prefix-length',
+      'Email prefix must be at least 3 characters',
+      (value) => {
+        if (!value) return true;
+        const username = value.split('@')[0];
+        return username.length >= 3;
+      }
+    )
+    .max(70, `${label} must be at most 70 characters`)
+    .matches(emailRegex, 'Please enter a valid email');
+
+  return required ? schema.required(`${label} is required`) : schema;
+};
 
 export const phoneValidator = (label = 'Phone number') =>
   Yup.string()
