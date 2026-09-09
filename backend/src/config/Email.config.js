@@ -1,22 +1,11 @@
 import nodemailer from 'nodemailer';
-import dns from 'dns';
 import config from './index.js';
-
-// Force Node.js to prioritize IPv4 over IPv6 to avoid SMTP connection issues
-try {
-  dns.setDefaultResultOrder('ipv4first');
-} catch {
-  // Ignore fallback failure
-}
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: config.EMAIL_USER,
     pass: config.EMAIL_APP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: config.NODE_ENV === 'production',
   },
 });
 

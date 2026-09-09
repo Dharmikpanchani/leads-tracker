@@ -17,7 +17,11 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email: email.toLowerCase().trim(), isDeleted: false });
+    const user = await User.findOne({
+      email: email.toLowerCase().trim(),
+      isDeleted: false
+    });
+
     if (!user) {
       return ResponseHandler(
         res,
@@ -129,7 +133,12 @@ export const logout = async (req, res) => {
       secure: config.NODE_ENV === 'production',
     });
 
-    return ResponseHandler(res, StatusCodes.OK, responseMessage.LOGOUT_SUCCESS);
+    return ResponseHandler(
+      res,
+      StatusCodes.OK,
+      responseMessage.LOGOUT_SUCCESS
+    );
+
   } catch (error) {
     return CatchErrorHandler(res, error);
   }
@@ -139,10 +148,19 @@ export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
-      return ResponseHandler(res, StatusCodes.NOT_FOUND, responseMessage.USER_NOT_FOUND);
+      return ResponseHandler(
+        res,
+        StatusCodes.NOT_FOUND,
+        responseMessage.USER_NOT_FOUND
+      );
     }
 
-    return ResponseHandler(res, StatusCodes.OK, responseMessage.PROFILE_FETCHED, user);
+    return ResponseHandler(
+      res,
+      StatusCodes.OK,
+      responseMessage.PROFILE_FETCHED,
+      user
+    );
   } catch (error) {
     return CatchErrorHandler(res, error);
   }
@@ -152,7 +170,11 @@ export const updateProfile = async (req, res) => {
   try {
     const { name } = req.body;
     if (!name || !name.trim()) {
-      return ResponseHandler(res, StatusCodes.BAD_REQUEST, responseMessage.NAME_REQUIRED);
+      return ResponseHandler(
+        res,
+        StatusCodes.BAD_REQUEST,
+        responseMessage.NAME_REQUIRED
+      );
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -160,7 +182,12 @@ export const updateProfile = async (req, res) => {
       { name: name.trim() },
       { new: true }
     );
-    return ResponseHandler(res, StatusCodes.OK, responseMessage.PROFILE_UPDATED, updatedUser);
+    return ResponseHandler(
+      res,
+      StatusCodes.OK,
+      responseMessage.PROFILE_UPDATED,
+      updatedUser
+    );
   } catch (error) {
     return CatchErrorHandler(res, error);
   }
@@ -172,12 +199,20 @@ export const changePassword = async (req, res) => {
 
     const user = await User.findOne({ email: req.user.email?.toLowerCase().trim(), isDeleted: false });
     if (!user) {
-      return ResponseHandler(res, StatusCodes.NOT_FOUND, responseMessage.USER_NOT_FOUND);
+      return ResponseHandler(
+        res,
+        StatusCodes.NOT_FOUND,
+        responseMessage.USER_NOT_FOUND
+      );
     }
 
     const isMatch = await comparePassword(oldPassword, user.password);
     if (!isMatch) {
-      return ResponseHandler(res, StatusCodes.BAD_REQUEST, responseMessage.CURRENT_PASSWORD_MISMATCH);
+      return ResponseHandler(
+        res,
+        StatusCodes.BAD_REQUEST,
+        responseMessage.CURRENT_PASSWORD_MISMATCH
+      );
     }
 
     const hashedPassword = await hashPassword(newPassword);
@@ -271,7 +306,11 @@ export const verifyOtp = async (req, res) => {
     record.isVerified = true;
     await record.save();
 
-    return ResponseHandler(res, StatusCodes.OK, responseMessage.OTP_VERIFIED);
+    return ResponseHandler(
+      res,
+      StatusCodes.OK,
+      responseMessage.OTP_VERIFIED
+    );
   } catch (error) {
     return CatchErrorHandler(res, error);
   }
@@ -285,7 +324,11 @@ export const resendOtp = async (req, res) => {
 
     const user = await User.findOne({ email: cleanEmail, isDeleted: false });
     if (!user) {
-      return ResponseHandler(res, StatusCodes.NOT_FOUND, responseMessage.USER_NOT_FOUND);
+      return ResponseHandler(
+        res,
+        StatusCodes.NOT_FOUND,
+        responseMessage.USER_NOT_FOUND
+      );
     }
 
     // Generate new 6-digit OTP

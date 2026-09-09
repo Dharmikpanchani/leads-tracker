@@ -46,10 +46,19 @@ export const getLeadById = async (req, res) => {
     const lead = await Lead.findOne({ _id: id, isDeleted: false });
 
     if (!lead) {
-      return ResponseHandler(res, StatusCodes.NOT_FOUND, responseMessage.LEAD_NOT_FOUND);
+      return ResponseHandler(
+        res,
+        StatusCodes.NOT_FOUND,
+        responseMessage.LEAD_NOT_FOUND
+      );
     }
 
-    return ResponseHandler(res, StatusCodes.OK, responseMessage.LEAD_FETCHED, lead);
+    return ResponseHandler(
+      res,
+      StatusCodes.OK,
+      responseMessage.LEAD_FETCHED,
+      lead
+    );
   } catch (error) {
     return CatchErrorHandler(res, error);
   }
@@ -84,7 +93,11 @@ export const updateLead = async (req, res) => {
     const existing = await Lead.findOne({ _id: id, isDeleted: false });
 
     if (!existing) {
-      return ResponseHandler(res, StatusCodes.NOT_FOUND, responseMessage.LEAD_NOT_FOUND);
+      return ResponseHandler(
+        res,
+        StatusCodes.NOT_FOUND,
+        responseMessage.LEAD_NOT_FOUND
+      );
     }
 
     const updatedLead = await Lead.findByIdAndUpdate(id, req.body, { new: true });
@@ -106,7 +119,11 @@ export const deleteLead = async (req, res) => {
     const existing = await Lead.findOne({ _id: id, isDeleted: false });
 
     if (!existing) {
-      return ResponseHandler(res, StatusCodes.NOT_FOUND, responseMessage.LEAD_NOT_FOUND);
+      return ResponseHandler(
+        res,
+        StatusCodes.NOT_FOUND,
+        responseMessage.LEAD_NOT_FOUND
+      );
     }
 
     await Lead.findByIdAndUpdate(id, { isDeleted: true });
@@ -125,7 +142,12 @@ export const deleteLead = async (req, res) => {
 export const getLeadStats = async (req, res) => {
   try {
     const stats = await Lead.getStats();
-    return ResponseHandler(res, StatusCodes.OK, responseMessage.LEAD_STATS_FETCHED, stats);
+    return ResponseHandler(
+      res,
+      StatusCodes.OK,
+      responseMessage.LEAD_STATS_FETCHED,
+      stats
+    );
   } catch (error) {
     return CatchErrorHandler(res, error);
   }
@@ -135,7 +157,11 @@ export const bulkCreateLeads = async (req, res) => {
   try {
     const { leads } = req.body;
     if (!Array.isArray(leads) || leads.length === 0) {
-      return ResponseHandler(res, StatusCodes.BAD_REQUEST, responseMessage.LEADS_ARRAY_REQUIRED);
+      return ResponseHandler(
+        res,
+        StatusCodes.BAD_REQUEST,
+        responseMessage.LEADS_ARRAY_REQUIRED
+      );
     }
 
     const sanitized = leads.map((lead) => ({

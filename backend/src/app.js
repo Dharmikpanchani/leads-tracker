@@ -21,11 +21,10 @@ app.use(
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl) or matching client
-      if (!origin || config.ALLOWED_ORIGINS.includes(origin)) {
+      if (!origin || config.ALLOWED_ORIGINS.includes(origin) || config.NODE_ENV === 'development') {
         callback(null, true);
       } else {
-        callback(null, true); // Allow dev origins
+        callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,
