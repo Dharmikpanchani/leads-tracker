@@ -164,12 +164,11 @@ npm run dev
 
 ## 🔑 Default Login Credentials
 
-After running `npm run seed`, you can sign in with either of the following accounts:
+After running `npm run seed`, you can sign in with the default admin account:
 
 | User Type | Email | Password | Role |
 |---|---|---|---|
 | **Developer Admin** | `developer@yopmail.com` | `Admin@123` | Full Access |
-| **System Admin** | `admin@vidyasetu.com` | `Admin@123` | Full Access |
 
 ---
 
